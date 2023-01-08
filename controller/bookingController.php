@@ -36,6 +36,12 @@ if(isset($_POST["do"]) && $_POST["do"] != "" ){
             $res['res_code'] = 200;
             echo json_encode($res);
         break;
+        case 'app':
+            $sql = "UPDATE booking SET book_status = 3, updated_at = current_timestamp() WHERE book_id = '".$_POST['book_id']."'";
+            $result = mysqli_query($conn, $sql) or die(mysqli_error());
+            $res['res_code'] = 200;
+            echo json_encode($res);
+        break;
     }
 }
 

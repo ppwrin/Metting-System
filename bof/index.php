@@ -184,15 +184,21 @@ $stmt->execute();
                                             <td class="text-center">
                                                 <?php if($row['book_status'] === '2'){ ?>
                                                 <span class="badge rounded-pill text-bg-success">Approve by Admin</span>
+                                                <?php }else if($row['book_status'] === '3'){ ?>
+                                                <span class="badge rounded-pill text-bg-danger">Cancel by Admin</span>
                                                 <?php }else{ ?>
                                                 <span class="badge rounded-pill text-bg-warning">Waiting</span>
                                                 <?php } ?>
                                             </td>
                              
                                             <td class="text-center d-flex justify-content-center align-items-center">
-                                                <?php if($row['book_status'] != '2'){ ?>
+                                                <?php if($row['book_status'] == '2'){ ?>
                                                     <div class="d-flex align-items-center mt-3">
                                                         <button type="button" class="btn btn-sm btn-outline-success btn_action" data-id="<?php echo $row['book_id']; ?>">Approve</button>
+                                                    </div>
+                                                <?php }else{ ?>
+                                                    <div class="d-flex align-items-center mt-3">
+                                                        <button type="button" class="btn btn-sm btn-outline-success btn_cancel" data-id="<?php echo $row['book_id']; ?>">Cancel</button>
                                                     </div>
                                                 <?php } ?>
                                             </td>
@@ -240,6 +246,35 @@ $stmt->execute();
                         success: function (response) {
                             if(response.res_code == 200){
                                 Swal.fire('Approve', '', 'success')
+                                setTimeout(function() {
+                                    location.reload();
+                                }, 2000);
+                            }else{
+                                Swal.fire('Status are not saved', '', 'info')
+                            }
+                        }
+                    });
+                })
+            })
+
+            $('.btn_cancel').on('click', function() {
+                Swal.fire({
+                    title: 'Do you want to cancel booking',
+                    showDenyButton: true,
+                    confirmButtonText: 'Save',
+                    denyButtonText: `Don't save`,
+                }).then((result) => {
+                    $.ajax({
+                        type: "POST",
+                        url: "../controller/bookingController.php",
+                        data: {
+                            do: 'cancel',
+                            book_id: $(this).data('id')
+                        },
+                        dataType: "json",
+                        success: function (response) {
+                            if(response.res_code == 200){
+                                Swal.fire('Cancel', '', 'success')
                                 setTimeout(function() {
                                     location.reload();
                                 }, 2000);
